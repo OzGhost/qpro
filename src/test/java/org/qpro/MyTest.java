@@ -23,18 +23,21 @@ public class MyTest {
         }
         String[] dict = uniq.toArray(new String[uniq.size()]);
         Random r = new Random();
-        int z = 10;
-        int hz = z/2;
-        int n = r.nextInt(hz)+hz;
-        int m = r.nextInt(hz)+hz;
+        int z = 100;
+        int hz = z*3/10;
+        int n = r.nextInt(z-hz)+hz;
+        int m = r.nextInt(z-hz)+hz;
         int l = n+m-r.nextInt(Math.min(n,m));
         int nr = n;
         int mr = m;
         if (l > dict.length) {
-            hz = dict.length/2;
-            n = r.nextInt(hz)+1;
-            m = r.nextInt(hz)+1;
-            l = n+m-r.nextInt(Math.min(n,m));
+            z = Math.min(nr, dict.length);
+            hz = z*3/10;
+            n = r.nextInt(z-hz)+hz;
+            z = Math.min(mr, dict.length);
+            hz = z*3/10;
+            m = r.nextInt(z-hz)+hz;
+            l = Math.min(n+m-r.nextInt(Math.min(n,m)), dict.length);
         }
         String tmp = null;
         int ti = 0;
@@ -69,6 +72,7 @@ public class MyTest {
             mc[ti] = tmp;
         }
         // under construction
+        /*
         System.out.println("[o0] dict: " + l);
         for (int i = 0; i < l; i++) {
             System.out.print(" " + dict[i]);
@@ -82,7 +86,37 @@ public class MyTest {
             System.out.print(" " + mc[i]);
         }
         System.out.println();
+        */
+        System.out.println(nr + " " + mr);
         System.out.println(ans);
+        p = "src/test/resources/ioset/";
+        String now = ""+new Date().getTime();
+        try (BufferedWriter writer = new BufferedWriter(
+                    new FileWriter(p + now + ".info")
+            )
+        ) {
+            writer.write(nr + " " + mr + "\n");
+            writer.write(ans + "\n");
+            writer.flush();
+        }
+        try (BufferedWriter writer = new BufferedWriter(
+                    new FileWriter(p + now + ".your")
+            )
+        ) {
+            for (String i: nc) {
+                writer.write(i + "\n");
+            }
+            writer.flush();
+        }
+        try (BufferedWriter writer = new BufferedWriter(
+                    new FileWriter(p + now + ".mine")
+            )
+        ) {
+            for (String i: mc) {
+                writer.write(i + "\n");
+            }
+            writer.flush();
+        }
     }
 
 }
