@@ -8,6 +8,37 @@ import java.nio.file.Files;
 public class MyTest {
 
     @Test
+    public void another() throws Exception {
+        String[] ioset = {"i01"};
+        String base = "src/test/resources/ioset/i01.";
+        String candi = base;
+        List<String> lines = Files.readAllLines(new File(candi+"info").toPath());
+        String[] tray = null;
+        if (lines.size() != 2) {
+            System.out.println("[o0] .info was broken :P");
+            return;
+        }
+        tray = lines.get(0).split("\\s");
+        int yl = Integer.parseInt(tray[0]);
+        int ml = Integer.parseInt(tray[1]);
+        String ans = lines.get(1);
+        String[] your = null;
+        String[] mine = null;
+        lines = Files.readAllLines(new File(candi+"your").toPath());
+        if (lines.size() != yl) {
+            System.out.println("[o0] .your was broken :P");
+            return;
+        }
+        your = lines.toArray(new String[lines.size()]);
+        lines = Files.readAllLines(new File(candi+"mine").toPath());
+        if (lines.size() != ml) {
+            System.out.println("[o0] .mine was broken :p");
+            return;
+        }
+        mine = lines.toArray(new String[lines.size()]);
+        System.out.println("[o0] ready!!!");
+    }
+
     public void firstCase() throws Exception {
         String p = "src/test/resources/lipsum.txt";
         String content = Files.readString(new File(p).toPath());
@@ -23,7 +54,7 @@ public class MyTest {
         }
         String[] dict = uniq.toArray(new String[uniq.size()]);
         Random r = new Random();
-        int z = 100;
+        int z = 20;
         int hz = z*3/10;
         int n = r.nextInt(z-hz)+hz;
         int m = r.nextInt(z-hz)+hz;
