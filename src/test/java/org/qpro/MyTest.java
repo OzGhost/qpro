@@ -7,7 +7,6 @@ import java.nio.file.Files;
 
 public class MyTest {
 
-    @Test
     public void another() throws Exception {
         String[] ioset = {"i01"};
         String base = "src/test/resources/ioset/i01.";
