@@ -6,7 +6,6 @@ import java.util.*;
 
 public class CheckerTest {
 
-    @Test
     public void test_it() {
         Human me = new Human();
         me.birthday = "2011-12-03T10:15:30";

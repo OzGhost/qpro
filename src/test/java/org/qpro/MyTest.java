@@ -7,6 +7,8 @@ import java.nio.file.Files;
 
 public class MyTest {
 
+    private static final Random r = new Random();
+
     public void another() throws Exception {
         String[] ioset = {"i01"};
         String base = "src/test/resources/ioset/i01.";
@@ -38,116 +40,87 @@ public class MyTest {
         System.out.println("[o0] ready!!!");
     }
 
+    @Test
     public void firstCase() throws Exception {
         String p = "src/test/resources/lipsum.txt";
-        String content = Files.readString(new File(p).toPath());
-        content = content.replace('\n', ' ');
-        Set<String> uniq = new HashSet<>();
-        int c = 0;
-        for (String i: content.split("[^a-zA-Z]")) {
-            String j = i.trim().toLowerCase();
-            if ( ! j.isEmpty()) {
-                uniq.add(j);
-                c++;
-            }
+        List<String> dl = Files.readAllLines(new File(p).toPath());
+        String[] dict = dl.toArray(new String[dl.size()]);
+        gen(10, dict, 10);
+        gen(10, dict, 20);
+        gen(10, dict, 30);
+    }
+
+    private void gen(int s, String[] dict, int name) throws Exception {
+        int ol = r.nextInt(1+s/2);
+        int lo = r.nextInt(1 + s - ol*2);
+        if (ol == 0 && (lo == 0 || lo == s)) {
+            lo = r.nextInt(s-1)+1;
         }
-        String[] dict = uniq.toArray(new String[uniq.size()]);
-        Random r = new Random();
-        int z = 20;
-        int hz = z*3/10;
-        int n = r.nextInt(z-hz)+hz;
-        int m = r.nextInt(z-hz)+hz;
-        int l = n+m-r.nextInt(Math.min(n,m));
-        int nr = n;
-        int mr = m;
-        if (l > dict.length) {
-            z = Math.min(nr, dict.length);
-            hz = z*3/10;
-            n = r.nextInt(z-hz)+hz;
-            z = Math.min(mr, dict.length);
-            hz = z*3/10;
-            m = r.nextInt(z-hz)+hz;
-            l = Math.min(n+m-r.nextInt(Math.min(n,m)), dict.length);
-        }
-        String tmp = null;
-        int ti = 0;
-        for (int i = 0; i < l; i++) {
-            ti = r.nextInt(dict.length);
-            tmp = dict[i];
-            dict[i] = dict[ti];
-            dict[ti] = tmp;
-        }
-        String[] nc = new String[nr];
-        String[] mc = new String[mr];
-        System.arraycopy(dict, 0, nc, 0, n);
-        System.arraycopy(dict, l-m, mc, 0, m);
-        int buf = n+m-l;
-        String ans = (n-buf) + " " + (m-buf) + " " + buf;
-        for (int i = n; i < nr; i++) {
-            nc[i] = nc[r.nextInt(n)];
-        }
-        for (int i = m; i < mr; i++) {
-            mc[i] = mc[r.nextInt(m)];
-        }
-        for (int i = 0; i < nr; i++) {
-            ti = r.nextInt(nr);
-            tmp = nc[i];
-            nc[i] = nc[ti];
-            nc[ti] = tmp;
-        }
-        for (int i = 0; i < mr; i++) {
-            ti = r.nextInt(mr);
-            tmp = mc[i];
-            mc[i] = mc[ti];
-            mc[ti] = tmp;
-        }
-        // under construction
+        int ro = s - ol*2 - lo;
+        int left = lo + ol;
+        int right = ro + ol;
+        shuf(dict);
+        String[] ll = new String[left];
+        String[] rl = new String[right];
+        System.arraycopy(dict, 0, ll, 0, left);
+        System.arraycopy(dict, lo, rl, 0, right);
+        
+        String[] lol = new String[lo];
+        String[] oll = new String[ol];
+        String[] rol = new String[ro];
+        System.arraycopy(dict, 0, lol, 0, lo);
+        System.arraycopy(dict, lo, oll, 0, ol);
+        System.arraycopy(dict, lo+ol, rol, 0, ro);
+        
+        wrote(lol, name+"o.lo");
+        wrote(oll, name+"o.ol");
+        wrote(rol, name+"o.ro");
+
+        shuf(ll);
+        wrote(ll, name+"i.l");
+        shuf(rl);
+        wrote(rl, name+"i.r");
+
         /*
-        System.out.println("[o0] dict: " + l);
-        for (int i = 0; i < l; i++) {
-            System.out.print(" " + dict[i]);
-        }
-        System.out.println("\n[o0] nr:" + nr);
-        for (int i = 0; i < nr; i++) {
-            System.out.print(" " + nc[i]);
-        }
-        System.out.println("\n[o0] m:" + mr);
-        for (int i = 0; i < mr; i++) {
-            System.out.print(" " + mc[i]);
-        }
+        System.out.println(" " + lo + " " + ro + " " + ol);
+        for (int i = 0; i < s-ol; i++) System.out.print(" " + dict[i]);
+        System.out.println();
+        for (int i = 0; i < ll.length; i++) System.out.print(" " + ll[i]);
+        System.out.println();
+        for (int i = 0; i < rl.length; i++) System.out.print(" " + rl[i]);
+        System.out.println();
+        System.out.println("--------------------");
+        for (int i = 0; i < lol.length; i++) System.out.print(" " + lol[i]);
+        System.out.println();
+        for (int i = 0; i < rol.length; i++) System.out.print(" " + rol[i]);
+        System.out.println();
+        for (int i = 0; i < oll.length; i++) System.out.print(" " + oll[i]);
         System.out.println();
         */
-        System.out.println(nr + " " + mr);
-        System.out.println(ans);
-        p = "src/test/resources/ioset/";
-        String now = ""+new Date().getTime();
-        try (BufferedWriter writer = new BufferedWriter(
-                    new FileWriter(p + now + ".info")
-            )
-        ) {
-            writer.write(nr + " " + mr + "\n");
-            writer.write(ans + "\n");
-            writer.flush();
-        }
-        try (BufferedWriter writer = new BufferedWriter(
-                    new FileWriter(p + now + ".your")
-            )
-        ) {
-            for (String i: nc) {
-                writer.write(i + "\n");
-            }
-            writer.flush();
-        }
-        try (BufferedWriter writer = new BufferedWriter(
-                    new FileWriter(p + now + ".mine")
-            )
-        ) {
-            for (String i: mc) {
-                writer.write(i + "\n");
-            }
-            writer.flush();
+    }
+
+    private void shuf(String[] arr) {
+        int l = arr.length;
+        for (int i = 0; i < l; i++) {
+            int ri = r.nextInt(l);
+            String t = arr[i];
+            arr[i] = arr[ri];
+            arr[ri] = t;
         }
     }
 
+    private void wrote(String[] arr, String p) throws Exception {
+        File f = new File("src/test/resources/ioset/" + p);
+        f.createNewFile();
+        if (arr.length == 0) return;
+        try (BufferedWriter bw = new BufferedWriter(new FileWriter(f))) {
+            bw.write(arr[0]);
+            for (int i = 1; i < arr.length; i++) {
+                bw.newLine();
+                bw.write(arr[i]);
+            }
+            bw.flush();
+        }
+    }
 }
 
