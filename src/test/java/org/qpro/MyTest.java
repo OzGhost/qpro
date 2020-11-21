@@ -45,9 +45,13 @@ public class MyTest {
         String p = "src/test/resources/lipsum.txt";
         List<String> dl = Files.readAllLines(new File(p).toPath());
         String[] dict = dl.toArray(new String[dl.size()]);
-        gen(10, dict, 1);
-        gen(20, dict, 2);
-        gen(30, dict, 3);
+        int l = 100;
+        int i = 40;
+        while (l <= dict.length) {
+            gen(l, dict, i);
+            i++;
+            l += 100;
+        }
     }
 
     private void gen(int s, String[] dict, int name) throws Exception {
