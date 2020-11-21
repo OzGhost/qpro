@@ -45,9 +45,9 @@ public class MyTest {
         String p = "src/test/resources/lipsum.txt";
         List<String> dl = Files.readAllLines(new File(p).toPath());
         String[] dict = dl.toArray(new String[dl.size()]);
-        gen(10, dict, 10);
-        gen(10, dict, 20);
-        gen(10, dict, 30);
+        gen(10, dict, 1);
+        gen(20, dict, 2);
+        gen(30, dict, 3);
     }
 
     private void gen(int s, String[] dict, int name) throws Exception {

@@ -1,0 +1,16 @@
+calculate
+ocean
+form
+investigation
+neck
+feel
+apparent
+two
+creation
+yellow
+gaze
+capture
+nearby
+correspondent
+satellite
+democratic
